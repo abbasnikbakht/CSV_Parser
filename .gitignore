@@ -3,6 +3,3 @@
 .idea/
 
 ## Project Based ##
-pandas/
-pymysql/
-sqlalchemy/

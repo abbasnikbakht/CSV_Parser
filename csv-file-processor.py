@@ -4,10 +4,14 @@ import glob
 import shutil
 import logging
 import commands
+import time
+import datetime
+
 from sqlalchemy import create_engine
 import pandas
 from settings import INPUT_PATH, EXTENSIONS, PROCESSED_FOLDER_NAME, FAILURE_FOLDER_NAME, USERNAME, PASSWORD, HOST_NAME,\
-    DATABASE, TABLE_NAME, TABLE_COLUMNS
+    DATABASE, TABLE_NAME, DATABASE_ENGINE, TABLE_COLUMNS
+from datetime import datetime as dt
 
 
 class CsvFileProcessor(object):
@@ -22,6 +26,7 @@ class CsvFileProcessor(object):
     failure_path = None
 
     # creating the mysql engine
+    # csvEngine = create_engine(DATABASE_ENGINE + USERNAME + ":" + PASSWORD + "@" + HOST_NAME + ":1521/" + DATABASE)
     csvEngine = create_engine("mysql+pymysql://" + USERNAME + ":" + PASSWORD + "@" + HOST_NAME + "/" + DATABASE)
 
     def __init__(self, args):
@@ -59,12 +64,28 @@ class CsvFileProcessor(object):
 
     def get_files(self, path, extensions):
         """
-        Return all files with the extensions provided from the path as a list
+        Return all files which has dumped before the day of script execution with the extensions provided from the path
+        as a list
         """
         files_grabbed = []
+        today = datetime.datetime.now().date()
         for ext in extensions:
-            files_grabbed.extend(glob.glob(os.path.join(path, "*.{0}".format(ext))))
+
+            grabbed_files_list = glob.glob(os.path.join(path, "*.{0}".format(ext)))
+
+            for grabbed_file in grabbed_files_list:
+                epoch_string = grabbed_file.split("-")[1]
+                date_obj_converted = self.convert_epoch_time(int(epoch_string[0:10]))
+                if date_obj_converted < today:
+                    files_grabbed.append(grabbed_file)
         return files_grabbed
+
+    def convert_epoch_time(self, epoch_date):
+        """Returns the date from epoch datetime"""
+
+        converted_date = dt.strptime(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(epoch_date)),
+                                     '%Y-%m-%d %H:%M:%S').date()
+        return converted_date
 
     def process_file(self, csv_file):
         """
@@ -72,19 +93,19 @@ class CsvFileProcessor(object):
         """
         is_success = True
 
-        logger.info("Processing file: %s" % csv_file)
+        logger.info("Processing file: %s started at %s" % (csv_file, datetime.datetime.now()))
 
         try:
             df = pandas.read_csv(csv_file, header=None, engine='python')
             df.columns = TABLE_COLUMNS
             df.to_sql(TABLE_NAME, self.csvEngine, if_exists='append', index=False)
-            logger.info("File processing succeeded for:  %s " % csv_file)
+            logger.info("File processing succeeded for:  %s at %s " % (csv_file, datetime.datetime.now()))
         except Exception, e:
             is_success = False
             logger.error("File processing failed for:  %s with message as : %s" % (csv_file, e))
             logger.error("Copied the file: %s to failed folder " % csv_file)
 
-        self.move_file(csv_file, is_success)
+        # self.move_file(csv_file, is_success)
 
     @staticmethod
     def stop_if_already_running():

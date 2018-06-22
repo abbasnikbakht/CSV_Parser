@@ -1,0 +1,12 @@
+Starting the csv processing script
+2018-06-22 17:10:40,091 INFO: Starting the csv processing script
+Processing file: /home/seqato/knowesis/data/inputs/test2-1529493653000-1.csv started at 2018-06-22 17:10:40.112882
+2018-06-22 17:10:40,112 INFO: Processing file: /home/seqato/knowesis/data/inputs/test2-1529493653000-1.csv started at 2018-06-22 17:10:40.112882
+File processing succeeded for:  /home/seqato/knowesis/data/inputs/test2-1529493653000-1.csv at 2018-06-22 17:10:40.481329 
+2018-06-22 17:10:40,481 INFO: File processing succeeded for:  /home/seqato/knowesis/data/inputs/test2-1529493653000-1.csv at 2018-06-22 17:10:40.481329 
+Processing file: /home/seqato/knowesis/data/inputs/test-1529493653000-1.csv started at 2018-06-22 17:10:40.481619
+2018-06-22 17:10:40,481 INFO: Processing file: /home/seqato/knowesis/data/inputs/test-1529493653000-1.csv started at 2018-06-22 17:10:40.481619
+File processing succeeded for:  /home/seqato/knowesis/data/inputs/test-1529493653000-1.csv at 2018-06-22 17:10:59.315664 
+2018-06-22 17:10:59,315 INFO: File processing succeeded for:  /home/seqato/knowesis/data/inputs/test-1529493653000-1.csv at 2018-06-22 17:10:59.315664 
+Script Completed
+2018-06-22 17:10:59,316 INFO: Script Completed
